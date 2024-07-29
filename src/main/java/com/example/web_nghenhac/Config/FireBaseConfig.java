@@ -14,6 +14,7 @@ import java.io.IOException;
 
 @Configuration
 public class FireBaseConfig {
+    //test
     @Value("${app.firebase.config.path}")
     private String firebaseConfigPath;
 
