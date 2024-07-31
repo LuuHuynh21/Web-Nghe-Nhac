@@ -29,4 +29,8 @@ public class NguoiDungService {
     public VaiTro saveVaiTro(VaiTro vaiTro){
         return vaiTroRepo.save(vaiTro);
     }
+
+    public NguoiDung getById(Long id){
+        return nguoiDungRepo.findById(id).get();
+    }
 }

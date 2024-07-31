@@ -1,21 +1,24 @@
 package com.example.web_nghenhac.controller.Admin;
 
 
-import com.example.web_nghenhac.DTO.AlbumDTO;
+
 import com.example.web_nghenhac.Service.AlbumService;
+import com.example.web_nghenhac.Service.BaiHatService;
 import com.example.web_nghenhac.Service.NgheSiService;
 import com.example.web_nghenhac.entity.Album;
+import com.example.web_nghenhac.entity.BaiHat;
 import com.example.web_nghenhac.entity.NgheSi;
 import com.google.cloud.storage.Blob;
 import com.google.firebase.cloud.StorageClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,12 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 
@@ -44,19 +43,40 @@ public class AlbumController {
     @Autowired
     private NgheSiService ngheSiService;
 
+    @Autowired
+    private BaiHatService baiHatService;
+
 //    @Value("${app.upload-dir}") // Đọc đường dẫn thư mục từ cấu hình
 //    private String uploadDir;
 
     @GetMapping
-    public List<Album> getAll() {
+    public List<Album> getAll(){
         return albumService.getAll();
     }
 
-    @GetMapping("/{id}")
-    public Album getById(@PathVariable("id")Long id){
-        return albumService.getById(id);
+    @GetMapping("/phan-trang")
+    public Page<Album> phanTrang(@RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "10")int size) {
+        Pageable pageable = PageRequest.of(page,size);
+        return albumService.phanTrang(pageable);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<Album>> searchAlbum(@RequestParam("ten") String ten){
+        List<Album> result = albumService.getByName(ten);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/tong-album")
+    public ResponseEntity<Long> tongAlbum(){
+        Long tongAB = albumService.tongAB();
+        return ResponseEntity.ok(tongAB);
+    }
+
+    @GetMapping("/{id}")
+    public List<BaiHat> getSongsByAlbum(@PathVariable Long id) {
+        return baiHatService.getBaiHatsByAlbum(id);
+    }
+    
     @Autowired
     private StorageClient storageClient;
 

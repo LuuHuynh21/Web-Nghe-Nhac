@@ -1,6 +1,5 @@
 package com.example.web_nghenhac.controller.Admin;
 
-import com.example.web_nghenhac.DTO.BaiHatDTO;
 import com.example.web_nghenhac.Service.AlbumService;
 import com.example.web_nghenhac.Service.BaiHatService;
 import com.example.web_nghenhac.Service.NgheSiService;
@@ -13,14 +12,16 @@ import com.google.cloud.storage.Blob;
 import com.google.firebase.cloud.StorageClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,13 +29,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Date;
-import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -58,8 +56,33 @@ public class BaiHatController {
         return baiHatService.getAll();
     }
 
-    @Value("${app.mp3-dir}") // Đọc đường dẫn thư mục từ cấu hình
-    private String mp3Dir;
+    @GetMapping("/phan-trang")
+    public Page<BaiHat> getAll(@RequestParam(defaultValue = "0")int page,@RequestParam(defaultValue = "10")int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return baiHatService.phanTrang(pageable);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<BaiHat>> searchNgheSi(@RequestParam("ten") String ten){
+        List<BaiHat> result = baiHatService.getByTen(ten);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/tong-luot-nghe")
+    public ResponseEntity<Long> tongLuotNghe(){
+        Long tongLuotNghe = baiHatService.getTongBaiHat();
+        return ResponseEntity.ok(tongLuotNghe);
+    }
+
+    @PutMapping("/luotnghe/{id}")
+    public ResponseEntity<BaiHat> LuotNghe(@PathVariable Long id) {
+        BaiHat updatedBaiHat = baiHatService.LuotNghe(id);
+        if (updatedBaiHat != null) {
+            return ResponseEntity.ok(updatedBaiHat);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @Autowired
     private StorageClient storageClient;

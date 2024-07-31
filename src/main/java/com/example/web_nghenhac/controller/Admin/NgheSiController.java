@@ -7,6 +7,9 @@ import com.google.cloud.storage.Blob;
 import com.google.firebase.cloud.StorageClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +38,24 @@ public class NgheSiController {
     @GetMapping
     public List<NgheSi> getAll(){
         return ngheSiService.getAll();
+    }
+
+    @GetMapping("/phan-trang")
+    public Page<NgheSi> phanTrang(@RequestParam(defaultValue = "0")int page,@RequestParam(defaultValue = "10")int size) {
+        Pageable pageable = PageRequest.of(page,size);
+        return ngheSiService.phanTrang(pageable);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<NgheSi>> searchNgheSi(@RequestParam("ten") String ten){
+        List<NgheSi> result = ngheSiService.getByTen(ten);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/tong-nghe-si")
+    public ResponseEntity<Long> tongNgheSi(){
+        Long tongNS = ngheSiService.tongNgheSi();
+        return ResponseEntity.ok(tongNS);
     }
 
     @Autowired

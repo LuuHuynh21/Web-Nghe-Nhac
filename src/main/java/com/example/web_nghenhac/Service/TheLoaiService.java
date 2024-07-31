@@ -3,7 +3,10 @@ package com.example.web_nghenhac.Service;
 import com.example.web_nghenhac.entity.TheLoai;
 import com.example.web_nghenhac.repository.TheLoaiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +20,11 @@ public class TheLoaiService {
     public List<TheLoai> getAll(){
         return theLoaiRepo.findAll();
     }
+
+    public Page<TheLoai> phanTrang(Pageable pageable){
+        return theLoaiRepo.findAll(pageable);
+    }
+
 
     public TheLoai getById(Long id){
         return theLoaiRepo.findById(id).orElse(null);
@@ -39,7 +47,7 @@ public class TheLoaiService {
             return theLoaiRepo.save(o);
         }).orElse(null);
     }
-    public TheLoai getByName(String ten) {
-        return theLoaiRepo.findByTen(ten);
+    public List<TheLoai> getByName(@RequestParam("ten") String ten) {
+        return theLoaiRepo.searchTen(ten);
     }
 }

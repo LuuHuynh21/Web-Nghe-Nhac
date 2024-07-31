@@ -1,6 +1,5 @@
 package com.example.web_nghenhac.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,45 +15,26 @@ import lombok.Setter;
 
 import java.util.Date;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BaiHat")
+@Table(name = "BaiHatYeuThich")
 @Entity
-public class BaiHat {
+public class BaiHatYeuThich {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private Long id;
 
-    @Column(name = "Ma")
-    private String ma;
-
-    @Column(name = "Ten")
-    private String ten;
+    @ManyToOne
+    @JoinColumn(name = "IdNguoiDung")
+    private NguoiDung nguoiDung;
 
     @ManyToOne
-    @JoinColumn(name = "IdNgheSi")
-    private NgheSi ngheSi;
-
-    @ManyToOne
-    @JoinColumn(name = "IdTheLoai")
-    private TheLoai theLoai;
-
-    @ManyToOne
-    @JoinColumn(name = "IdAlbum")
-    private Album album;
-
-    @Column(name = "ThoiLuong")
-    private String thoiLuong;
-
-    @Column(name = "LuotNghe")
-    private Integer luotNghe = 0;
-
-    @Column(name = "URL")
-    private String url;
+    @JoinColumn(name = "IdBaiHat")
+    private BaiHat baiHat;
 
     @Column(name = "NgayTao")
     private Date ngayTao;

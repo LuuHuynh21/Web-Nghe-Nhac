@@ -6,6 +6,8 @@ import com.example.web_nghenhac.entity.NgheSi;
 import com.example.web_nghenhac.repository.AlbumRepository;
 import com.example.web_nghenhac.repository.NgheSiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
@@ -24,6 +26,10 @@ public class AlbumService {
 
     public List<Album> getAll(){
         return albumRepo.findAll();
+    }
+
+    public Page<Album> phanTrang(Pageable pageable){
+        return albumRepo.findAll(pageable);
 //        return album.stream().map(this::albumDTO).collect(Collectors.toList());
     }
 //    private AlbumDTO albumDTO(Album album){
@@ -60,7 +66,11 @@ public class AlbumService {
             return albumRepo.save(album);
         }).orElse(null);
     }
-    public Album getByName(String ten) {
-        return albumRepo.findByTen(ten);
+    public List<Album> getByName(String ten) {
+        return albumRepo.searchTen(ten);
+    }
+
+    public Long tongAB(){
+        return albumRepo.tongAlbum();
     }
 }

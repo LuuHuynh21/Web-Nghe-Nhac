@@ -3,7 +3,10 @@ package com.example.web_nghenhac.Service;
 import com.example.web_nghenhac.entity.NgheSi;
 import com.example.web_nghenhac.repository.NgheSiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +16,10 @@ public class NgheSiService {
 
     @Autowired
     private NgheSiRepository ngheSiRepo;
+
+    public Page<NgheSi> phanTrang(Pageable pageable){
+        return ngheSiRepo.findAll(pageable);
+    }
 
     public List<NgheSi> getAll(){
         return ngheSiRepo.findAll();
@@ -41,8 +48,12 @@ public class NgheSiService {
             return ngheSiRepo.save(ngheSi);
         }).orElse(null);
     }
-    public Optional<NgheSi> getByTen(String ten) {
-        return ngheSiRepo.findByTen(ten);
+    public List<NgheSi> getByTen(@RequestParam("ten") String ten) {
+        return ngheSiRepo.searchTen(ten);
+    }
+
+    public Long tongNgheSi(){
+        return ngheSiRepo.tongNgheSi();
     }
 }
 

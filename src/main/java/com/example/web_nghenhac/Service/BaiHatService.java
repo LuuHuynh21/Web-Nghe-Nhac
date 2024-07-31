@@ -3,7 +3,10 @@ package com.example.web_nghenhac.Service;
 import com.example.web_nghenhac.DTO.BaiHatDTO;
 import com.example.web_nghenhac.entity.BaiHat;
 import com.example.web_nghenhac.repository.BaiHatRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -16,6 +19,10 @@ public class BaiHatService {
 
     @Autowired
     private BaiHatRepository baiHatRepo;
+
+    public Page<BaiHat> phanTrang(Pageable pageable){
+        return baiHatRepo.findAll(pageable);
+    }
 
     public List<BaiHat> getAll() {
         return   baiHatRepo.findAll();
@@ -66,5 +73,25 @@ public class BaiHatService {
             return baiHatRepo.save(baiHat);
         }).orElse(null);
     }
+    public List<BaiHat> getBaiHatsByAlbum(Long id) {
+        return baiHatRepo.findByAlbumId(id);
+    }
 
+    public BaiHat LuotNghe(Long id) {
+        Optional<BaiHat> optionalBaiHat = baiHatRepo.findById(id);
+        if (optionalBaiHat.isPresent()) {
+            BaiHat baiHat = optionalBaiHat.get();
+            baiHat.setLuotNghe(baiHat.getLuotNghe() + 1);
+            return baiHatRepo.save(baiHat);
+        }
+        return null;
+    }
+
+    public List<BaiHat> getByTen( String ten) {
+        return baiHatRepo.searchTen(ten);
+    }
+
+    public Long getTongBaiHat(){
+        return baiHatRepo.TongLuotNghe();
+    }
 }
