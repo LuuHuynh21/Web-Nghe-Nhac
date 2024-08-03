@@ -21,5 +21,8 @@ public interface BaiHatRepository extends JpaRepository<BaiHat,Long> {
     Long TongLuotNghe();
 
     List<BaiHat> findByAlbumId(Long id);
+
+    List<BaiHat> findByTheLoaiId(Long theLoaiId);
+
     Page<BaiHat> findAll(Pageable pageable);
 }

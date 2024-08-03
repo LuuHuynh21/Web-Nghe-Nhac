@@ -1,7 +1,9 @@
 package com.example.web_nghenhac.controller.Admin;
 
 
+import com.example.web_nghenhac.Service.BaiHatService;
 import com.example.web_nghenhac.Service.TheLoaiService;
+import com.example.web_nghenhac.entity.BaiHat;
 import com.example.web_nghenhac.entity.TheLoai;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,6 +31,9 @@ public class TheLoaiController {
     @Autowired
     private TheLoaiService theLoaiService;
 
+    @Autowired
+    private BaiHatService baiHatService;
+
     @GetMapping
     public List<TheLoai> getAll(){
         return theLoaiService.getAll();
@@ -51,11 +56,24 @@ public class TheLoaiController {
         TheLoai createTL = theLoaiService.add(theLoai);
         return ResponseEntity.status(HttpStatus.CREATED).body(createTL);
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<TheLoai> getDetail(@PathVariable("id") Long id) {
+        TheLoai theLoai = theLoaiService.getById(id);
+        if (theLoai != null) {
+            return ResponseEntity.ok(theLoai);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TheLoai> update(@PathVariable("id")Long id, @RequestBody TheLoai theLoai){
+    public ResponseEntity<TheLoai> update(@PathVariable("id") Long id, @RequestBody TheLoai theLoai){
         TheLoai update = theLoaiService.update(id, theLoai);
-        return ResponseEntity.ok(update);
+        if (update != null) {
+            return ResponseEntity.ok(update);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<TheLoai> delete(@PathVariable("id")Long id){
@@ -66,5 +84,10 @@ public class TheLoaiController {
         } else{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/bai-hat/{theLoaiId}")
+    public List<BaiHat> getBaiHatsByTheLoai(@PathVariable Long theLoaiId) {
+        return baiHatService.getBaiHatsByTheLoai(theLoaiId);
     }
 }

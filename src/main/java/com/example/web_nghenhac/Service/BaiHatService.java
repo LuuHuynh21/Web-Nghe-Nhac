@@ -1,6 +1,7 @@
 package com.example.web_nghenhac.Service;
 
 import com.example.web_nghenhac.DTO.BaiHatDTO;
+import com.example.web_nghenhac.entity.Album;
 import com.example.web_nghenhac.entity.BaiHat;
 import com.example.web_nghenhac.repository.BaiHatRepository;
 import jakarta.transaction.Transactional;
@@ -93,5 +94,13 @@ public class BaiHatService {
 
     public Long getTongBaiHat(){
         return baiHatRepo.TongLuotNghe();
+    }
+
+    public Optional<BaiHat> findById(Long id) {
+        return baiHatRepo.findById(id);
+    }
+
+    public List<BaiHat> getBaiHatsByTheLoai(Long theLoaiId) {
+        return baiHatRepo.findByTheLoaiId(theLoaiId);
     }
 }

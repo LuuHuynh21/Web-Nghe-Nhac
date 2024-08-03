@@ -73,4 +73,7 @@ public class AlbumService {
     public Long tongAB(){
         return albumRepo.tongAlbum();
     }
+    public Optional<Album> findById(Long id) {
+        return albumRepo.findById(id);
+    }
 }

@@ -3,6 +3,7 @@ package com.example.web_nghenhac.controller.Admin;
 import com.example.web_nghenhac.Service.NgheSiService;
 import com.example.web_nghenhac.entity.Album;
 import com.example.web_nghenhac.entity.NgheSi;
+import com.example.web_nghenhac.entity.TheLoai;
 import com.google.cloud.storage.Blob;
 import com.google.firebase.cloud.StorageClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -97,5 +99,54 @@ public class NgheSiController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<NgheSi> getDetail(@PathVariable("id") Long id) {
+        NgheSi ngheSi = ngheSiService.getById(id);
+        if (ngheSi != null) {
+            return ResponseEntity.ok(ngheSi);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
 
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<NgheSi> update(@PathVariable("id") Long id,
+                                         @RequestParam("ma") String ma,
+                                         @RequestParam("ten") String ten,
+                                         @RequestParam("moTa") String moTa,
+                                         @RequestParam(value = "hinhAnh", required = false) MultipartFile hinhAnh) {
+        Optional<NgheSi> optionalNgheSi = ngheSiService.findById(id);
+
+        if (!optionalNgheSi.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        NgheSi ngheSi = optionalNgheSi.get();
+        ngheSi.setMa(ma);
+        ngheSi.setTen(ten);
+        ngheSi.setMoTa(moTa);
+        ngheSi.setNgaySua(new Date(System.currentTimeMillis()));
+
+        try {
+            if (hinhAnh != null && !hinhAnh.isEmpty()) {
+                String fileName = UUID.randomUUID().toString() + "_" + hinhAnh.getOriginalFilename();
+                InputStream inputStream = hinhAnh.getInputStream();
+                Blob blob = storageClient.bucket(bucketName).create(fileName, inputStream, hinhAnh.getContentType());
+
+                // Lấy URL tải xuống của hình ảnh
+                String imageUrl = String.format("https://firebasestorage.googleapis.com/v0/b/%s/o/%s?alt=media", bucketName, fileName);
+                ngheSi.setHinhAnh(imageUrl);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        NgheSi updatedNgheSi = ngheSiService.update(id, ngheSi);
+        if (updatedNgheSi != null) {
+            return ResponseEntity.ok(updatedNgheSi);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

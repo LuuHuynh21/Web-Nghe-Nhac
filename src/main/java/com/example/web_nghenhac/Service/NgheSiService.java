@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +33,9 @@ public class NgheSiService {
     public NgheSi getById(Long id){
         return ngheSiRepo.findById(id).orElse(null);
     }
+    public Optional<NgheSi> findById(Long id) {
+        return ngheSiRepo.findById(id);
+    }
 
     public void delete(Long id){
         ngheSiRepo.deleteById(id);
@@ -43,8 +47,7 @@ public class NgheSiService {
             o.setTen(ngheSi.getTen());
             o.setMoTa(ngheSi.getMoTa());
             o.setHinhAnh(ngheSi.getHinhAnh());
-            o.setNgayTao(ngheSi.getNgayTao());
-            o.setNgaySua(ngheSi.getNgaySua());
+            o.setNgaySua(new Date());
             return ngheSiRepo.save(ngheSi);
         }).orElse(null);
     }

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,11 +44,15 @@ public class TheLoaiService {
             o.setMa(theLoai.getMa());
             o.setTen(theLoai.getTen());
             o.setMoTa(theLoai.getMoTa());
-            o.setNgaySua(theLoai.getNgaySua());
+            o.setNgaySua(new Date());
             return theLoaiRepo.save(o);
         }).orElse(null);
     }
     public List<TheLoai> getByName(@RequestParam("ten") String ten) {
         return theLoaiRepo.searchTen(ten);
+    }
+
+    public Optional<TheLoai> findById(Long id) {
+        return theLoaiRepo.findById(id);
     }
 }

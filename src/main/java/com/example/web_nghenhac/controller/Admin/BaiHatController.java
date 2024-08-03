@@ -33,6 +33,7 @@ import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -139,5 +140,73 @@ public class BaiHatController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<BaiHat> getDetail(@PathVariable("id") Long id) {
+        BaiHat baiHat = baiHatService.getByID(id);
+        if (baiHat != null) {
+            return ResponseEntity.ok(baiHat);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
 
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<BaiHat> update(@PathVariable("id") Long id,
+                                         @RequestParam("ma") String ma,
+                                         @RequestParam("ten") String ten,
+                                         @RequestParam("thoiLuong") String thoiLuong,
+                                         @RequestParam("ngheSi") Long idNgheSi,
+                                         @RequestParam("theLoai") Long idTheLoai,
+                                         @RequestParam("album") Long idAlbum,
+                                         @RequestParam("url") MultipartFile fileMp3) {
+        Optional<BaiHat> optionalBaiHat = baiHatService.findById(id);
+
+        if (!optionalBaiHat.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        Optional<NgheSi> optionalNgheSi = ngheSiService.findById(idNgheSi);
+        Optional<TheLoai> optionalTheLoai = theLoaiService.findById(idTheLoai);
+        Optional<Album> optionalAlbum = albumService.findById(idAlbum);
+
+        if (!optionalNgheSi.isPresent() || !optionalTheLoai.isPresent() || !optionalAlbum.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        BaiHat baiHat = optionalBaiHat.get();
+        NgheSi ngheSi = optionalNgheSi.get();
+        TheLoai theLoai = optionalTheLoai.get();
+        Album album = optionalAlbum.get();
+
+        baiHat.setMa(ma);
+        baiHat.setTen(ten);
+        baiHat.setThoiLuong(thoiLuong);
+        baiHat.setNgheSi(ngheSi);
+        baiHat.setTheLoai(theLoai);
+        baiHat.setAlbum(album);
+        baiHat.setNgaySua(new java.util.Date(System.currentTimeMillis()));
+
+        try {
+            if (!fileMp3.isEmpty()) {
+                String fileName = UUID.randomUUID().toString() + "_" + fileMp3.getOriginalFilename();
+                InputStream inputStream = fileMp3.getInputStream();
+                Blob blob = storageClient.bucket(bucketName).create(fileName, inputStream, fileMp3.getContentType());
+
+                // Lấy URL tải xuống của file MP3
+                String fileUrl = String.format("https://firebasestorage.googleapis.com/v0/b/%s/o/%s?alt=media", bucketName, fileName);
+                baiHat.setUrl(fileUrl);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+
+        BaiHat updatedBaiHat = baiHatService.update(id,baiHat);
+        if (updatedBaiHat != null) {
+            return ResponseEntity.ok(updatedBaiHat);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
