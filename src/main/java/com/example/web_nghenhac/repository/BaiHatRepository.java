@@ -20,9 +20,18 @@ public interface BaiHatRepository extends JpaRepository<BaiHat,Long> {
     @Query("SELECT SUM(bh.luotNghe) FROM BaiHat bh")
     Long TongLuotNghe();
 
-    List<BaiHat> findByAlbumId(Long id);
+
+    @Query("SELECT b FROM BaiHat b WHERE b.album.id = :id AND b.trangThai = true")
+    List<BaiHat> findByAlbumId(@Param("id") Long id);
+
 
     List<BaiHat> findByTheLoaiId(Long theLoaiId);
 
     Page<BaiHat> findAll(Pageable pageable);
+
+    @Query("SELECT b FROM BaiHat b WHERE b.trangThai = true")
+    Page<BaiHat> findByTrangThai(Pageable pageable);
+
+    @Query("SELECT b FROM BaiHat b WHERE b.trangThai = true ORDER BY NEWID()")
+    List<BaiHat> findBaiHatsRandom();
 }

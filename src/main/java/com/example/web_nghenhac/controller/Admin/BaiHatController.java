@@ -69,11 +69,7 @@ public class BaiHatController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/tong-luot-nghe")
-    public ResponseEntity<Long> tongLuotNghe(){
-        Long tongLuotNghe = baiHatService.getTongBaiHat();
-        return ResponseEntity.ok(tongLuotNghe);
-    }
+
 
     @PutMapping("/luotnghe/{id}")
     public ResponseEntity<BaiHat> LuotNghe(@PathVariable Long id) {
@@ -99,7 +95,7 @@ public class BaiHatController {
             @RequestParam("theLoai") Long IdTheLoai,
             @RequestParam("album") Long IdAlbum,
             @RequestParam("thoiLuong") String thoiLuong,
-            @RequestParam("url") MultipartFile fileMp3) {
+            @RequestParam("url") MultipartFile fileMp3) throws IOException {
 
         NgheSi ngheSi = ngheSiService.getById(IdNgheSi);
         TheLoai theLoai = theLoaiService.getById(IdTheLoai);
@@ -112,6 +108,7 @@ public class BaiHatController {
         BaiHat baiHat = new BaiHat();
         baiHat.setMa(ma);
         baiHat.setTen(ten);
+        baiHat.setTrangThai(true);
         baiHat.setNgheSi(ngheSi);
         baiHat.setTheLoai(theLoai);
         baiHat.setAlbum(album);
@@ -154,6 +151,7 @@ public class BaiHatController {
     public ResponseEntity<BaiHat> update(@PathVariable("id") Long id,
                                          @RequestParam("ma") String ma,
                                          @RequestParam("ten") String ten,
+                                         @RequestParam("trangThai") Boolean trangThai,
                                          @RequestParam("thoiLuong") String thoiLuong,
                                          @RequestParam("ngheSi") Long idNgheSi,
                                          @RequestParam("theLoai") Long idTheLoai,
@@ -180,6 +178,7 @@ public class BaiHatController {
 
         baiHat.setMa(ma);
         baiHat.setTen(ten);
+        baiHat.setTrangThai(trangThai);
         baiHat.setThoiLuong(thoiLuong);
         baiHat.setNgheSi(ngheSi);
         baiHat.setTheLoai(theLoai);

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -53,6 +54,8 @@ public class TheLoaiController {
 
     @PostMapping
     public ResponseEntity<TheLoai> createTL(@RequestBody TheLoai theLoai){
+        theLoai.setTrangThai(true);
+        theLoai.setNgayTao(new Date());
         TheLoai createTL = theLoaiService.add(theLoai);
         return ResponseEntity.status(HttpStatus.CREATED).body(createTL);
     }
@@ -86,8 +89,4 @@ public class TheLoaiController {
         }
     }
 
-    @GetMapping("/bai-hat/{theLoaiId}")
-    public List<BaiHat> getBaiHatsByTheLoai(@PathVariable Long theLoaiId) {
-        return baiHatService.getBaiHatsByTheLoai(theLoaiId);
-    }
 }

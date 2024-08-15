@@ -16,4 +16,7 @@ public interface AlbumRepository extends JpaRepository<Album,Long> {
     @Query("SELECT COUNT(ab) FROM Album ab")
     Long tongAlbum();
     Page<Album> findAll(Pageable pageable);
+
+    @Query("SELECT b FROM Album b WHERE b.trangThai = true")
+    Page<Album> findByTrangThai(Pageable pageable);
 }

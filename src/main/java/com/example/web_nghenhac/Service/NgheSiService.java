@@ -45,6 +45,7 @@ public class NgheSiService {
         return optional.map(o ->{
             o.setMa(ngheSi.getMa());
             o.setTen(ngheSi.getTen());
+            o.setTrangThai(ngheSi.getTrangThai());
             o.setMoTa(ngheSi.getMoTa());
             o.setHinhAnh(ngheSi.getHinhAnh());
             o.setNgaySua(new Date());

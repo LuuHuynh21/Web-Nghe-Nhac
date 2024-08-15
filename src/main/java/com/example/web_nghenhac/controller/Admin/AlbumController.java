@@ -45,12 +45,6 @@ public class AlbumController {
     @Autowired
     private NgheSiService ngheSiService;
 
-    @Autowired
-    private BaiHatService baiHatService;
-
-//    @Value("${app.upload-dir}") // Đọc đường dẫn thư mục từ cấu hình
-//    private String uploadDir;
-
     @GetMapping
     public List<Album> getAll(){
         return albumService.getAll();
@@ -68,16 +62,6 @@ public class AlbumController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/tong-album")
-    public ResponseEntity<Long> tongAlbum(){
-        Long tongAB = albumService.tongAB();
-        return ResponseEntity.ok(tongAB);
-    }
-
-    @GetMapping("/{id}")
-    public List<BaiHat> getSongsByAlbum(@PathVariable Long id) {
-        return baiHatService.getBaiHatsByAlbum(id);
-    }
     
     @Autowired
     private StorageClient storageClient;
@@ -98,6 +82,7 @@ public class AlbumController {
         Album album = new Album();
         album.setMa(ma);
         album.setTen(ten);
+        album.setTrangThai(true);
         album.setNgheSi(ngheSi);
         album.setNgayTao(new Date(System.currentTimeMillis()));
 
@@ -138,6 +123,7 @@ public class AlbumController {
     public ResponseEntity<Album> update(@PathVariable("id") Long id,
                                         @RequestParam("ma") String ma,
                                         @RequestParam("ten") String ten,
+                                        @RequestParam("trangThai") Boolean trangThai,
                                         @RequestParam("ngheSi") Long idNgheSi,
                                         @RequestParam(value = "hinhAnh", required = false) MultipartFile hinhAnh) {
         Optional<Album> optionalAlbum = albumService.findById(id);
@@ -157,6 +143,7 @@ public class AlbumController {
 
         album.setMa(ma);
         album.setTen(ten);
+        album.setTrangThai(trangThai);
         album.setNgheSi(ngheSi);
         album.setNgaySua(new Date(System.currentTimeMillis()));
 

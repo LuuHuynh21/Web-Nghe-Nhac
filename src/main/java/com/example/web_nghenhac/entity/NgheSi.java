@@ -35,6 +35,9 @@ public class NgheSi {
     @Column(name = "Ten")
     private String ten;
 
+    @Column(name = "TrangThai")
+    private Boolean trangThai;
+
     @Column(name = "MoTa")
     private String moTa;
 

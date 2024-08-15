@@ -35,6 +35,9 @@ public class BaiHat {
     @Column(name = "Ten")
     private String ten;
 
+    @Column(name = "TrangThai")
+    private Boolean trangThai;
+
     @ManyToOne
     @JoinColumn(name = "IdNgheSi")
     private NgheSi ngheSi;

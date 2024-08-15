@@ -30,19 +30,11 @@ public class AlbumService {
 
     public Page<Album> phanTrang(Pageable pageable){
         return albumRepo.findAll(pageable);
-//        return album.stream().map(this::albumDTO).collect(Collectors.toList());
     }
-//    private AlbumDTO albumDTO(Album album){
-//        AlbumDTO ab = new AlbumDTO();
-//        ab.setId(album.getId());
-//        ab.setMa(album.getMa());
-//        ab.setTen(album.getTen());
-//        ab.setNgheSiTen(album.getNgheSi().getTen());
-//        ab.setHinhAnh(album.getHinhAnh());
-//        ab.setNgayTao( album.getNgayTao());
-//        ab.setNgaySua( album.getNgaySua());
-//        return ab;
-//    }
+
+    public Page<Album> hienThiABTrangThai(Pageable pageable){
+        return albumRepo.findByTrangThai(pageable);
+    }
 
     public  Album add(Album album){
         return albumRepo.save(album);
@@ -59,6 +51,7 @@ public class AlbumService {
         return optional.map(o ->{
             o.setMa(album.getMa());
             o.setTen(album.getTen());
+            o.setTrangThai(album.getTrangThai());
             o.setNgheSi(album.getNgheSi());
             o.setHinhAnh(album.getHinhAnh());
             o.setNgayTao(album.getNgayTao());

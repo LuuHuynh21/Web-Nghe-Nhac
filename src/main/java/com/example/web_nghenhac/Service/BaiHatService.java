@@ -7,6 +7,7 @@ import com.example.web_nghenhac.repository.BaiHatRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,10 @@ public class BaiHatService {
 
     public Page<BaiHat> phanTrang(Pageable pageable){
         return baiHatRepo.findAll(pageable);
+    }
+
+    public Page<BaiHat> hienThiTheoTrangThai(Pageable pageable){
+        return baiHatRepo.findByTrangThai(pageable);
     }
 
     public List<BaiHat> getAll() {
@@ -64,7 +69,7 @@ public class BaiHatService {
             s.setMa(baiHat.getMa());
             s.setTen(baiHat.getTen());
             s.setThoiLuong(baiHat.getThoiLuong());
-//            s.setNgayPhatHanh(baiHat.getNgayPhatHanh());
+            s.setTrangThai(baiHat.getTrangThai());
             s.setUrl(baiHat.getUrl());
             s.setNgayTao(baiHat.getNgayTao());
             s.setNgaySua(baiHat.getNgaySua());
@@ -102,5 +107,12 @@ public class BaiHatService {
 
     public List<BaiHat> getBaiHatsByTheLoai(Long theLoaiId) {
         return baiHatRepo.findByTheLoaiId(theLoaiId);
+    }
+
+    public Page<BaiHat> findBaiHatsRandom(Pageable pageable) {
+        List<BaiHat> baiHats = baiHatRepo.findBaiHatsRandom();
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), baiHats.size());
+        return new PageImpl<>(baiHats.subList(start, end), pageable, baiHats.size());
     }
 }

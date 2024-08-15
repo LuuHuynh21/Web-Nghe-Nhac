@@ -1,4 +1,4 @@
-package com.example.web_nghenhac.controller.Admin;
+package com.example.web_nghenhac.controller.User;
 
 import com.example.web_nghenhac.Service.BaiHatService;
 import com.example.web_nghenhac.Service.BaiHatYeuThichService;

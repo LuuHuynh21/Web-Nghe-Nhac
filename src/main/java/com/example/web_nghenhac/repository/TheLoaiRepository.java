@@ -12,6 +12,10 @@ import java.util.List;
 public interface TheLoaiRepository extends JpaRepository<TheLoai,Long> {
     @Query(value = "SELECT * FROM TheLoai tl WHERE tl.Ten LIKE %:ten%",nativeQuery = true)
     List<TheLoai> searchTen(String ten);
+
     Page<TheLoai> findAll(Pageable pageable);
+
+    @Query("SELECT b FROM TheLoai b WHERE b.trangThai = true")
+    Page<TheLoai> findByTrangThai(Pageable pageable);
 
 }

@@ -26,6 +26,9 @@ public class TheLoaiService {
         return theLoaiRepo.findAll(pageable);
     }
 
+    public Page<TheLoai> findByTrangThai(Pageable pageable){
+        return theLoaiRepo.findByTrangThai(pageable);
+    }
 
     public TheLoai getById(Long id){
         return theLoaiRepo.findById(id).orElse(null);
@@ -43,6 +46,7 @@ public class TheLoaiService {
         return optional.map(o ->{
             o.setMa(theLoai.getMa());
             o.setTen(theLoai.getTen());
+            o.setTrangThai(theLoai.getTrangThai());
             o.setMoTa(theLoai.getMoTa());
             o.setNgaySua(new Date());
             return theLoaiRepo.save(o);

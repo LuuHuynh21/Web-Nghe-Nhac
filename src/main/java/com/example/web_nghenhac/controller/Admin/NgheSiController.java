@@ -54,12 +54,6 @@ public class NgheSiController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/tong-nghe-si")
-    public ResponseEntity<Long> tongNgheSi(){
-        Long tongNS = ngheSiService.tongNgheSi();
-        return ResponseEntity.ok(tongNS);
-    }
-
     @Autowired
     private StorageClient storageClient;
 
@@ -74,6 +68,7 @@ public class NgheSiController {
         NgheSi ngheSi = new NgheSi();
         ngheSi.setMa(ma);
         ngheSi.setTen(ten);
+        ngheSi.setTrangThai(true);
         ngheSi.setMoTa(moTa);
         ngheSi.setNgayTao(new Date(System.currentTimeMillis()));
 
@@ -113,6 +108,7 @@ public class NgheSiController {
     public ResponseEntity<NgheSi> update(@PathVariable("id") Long id,
                                          @RequestParam("ma") String ma,
                                          @RequestParam("ten") String ten,
+                                         @RequestParam("trangThai") Boolean trangThai,
                                          @RequestParam("moTa") String moTa,
                                          @RequestParam(value = "hinhAnh", required = false) MultipartFile hinhAnh) {
         Optional<NgheSi> optionalNgheSi = ngheSiService.findById(id);
@@ -124,6 +120,7 @@ public class NgheSiController {
         NgheSi ngheSi = optionalNgheSi.get();
         ngheSi.setMa(ma);
         ngheSi.setTen(ten);
+        ngheSi.setTrangThai(trangThai);
         ngheSi.setMoTa(moTa);
         ngheSi.setNgaySua(new Date(System.currentTimeMillis()));
 
